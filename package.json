@@ -8,7 +8,8 @@
     "start": "node src/server.js",
     "seed:admin": "node src/scripts/seedAdminUser.js",
     "seed:admin:del": "node src/scripts/deleteAdminUser.js",
-    "db:inspect": "node src/scripts/inspectAdminPlatform.js"
+    "db:inspect": "node src/scripts/inspectAdminPlatform.js",
+    "db:functions": "node src/scripts/inspectSchemaFunctions.js"
   },
   "dependencies": {
     "compression": "^1.7.4",
