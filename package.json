@@ -1,0 +1,28 @@
+{
+  "name": "admin-ventas",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js",
+    "seed:admin": "node src/scripts/seedAdminUser.js",
+    "seed:admin:del": "node src/scripts/deleteAdminUser.js",
+    "db:inspect": "node src/scripts/inspectAdminPlatform.js"
+  },
+  "dependencies": {
+    "compression": "^1.7.4",
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "express": "^4.19.2",
+    "express-ejs-layouts": "^2.5.1",
+    "express-session": "^1.17.3",
+    "helmet": "^7.0.0",
+    "connect-flash": "^0.1.1",
+    "bcryptjs": "^2.4.3",
+    "pg": "^8.12.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}

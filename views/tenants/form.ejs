@@ -1,0 +1,65 @@
+<div class="max-w-3xl mx-auto">
+  <div class="card bg-base-100 soft-card">
+    <div class="card-body space-y-4">
+      <div class="gradient-card gradient-pink rounded-xl p-4">
+        <h2 class="text-lg font-semibold"><%= mode === 'create' ? 'Crear nuevo tenant' : 'Editar tenant' %></h2>
+      </div>
+      <form method="post" action="<%= mode === 'create' ? '/tenants' : '/tenants/update' %>" class="grid gap-4 grid-cols-1 md:grid-cols-2">
+        <% if (mode === 'edit') { %>
+          <input type="hidden" name="id" value="<%= tenant.id %>">
+          <input type="hidden" name="esquema_actual" value="<%= tenant.esquema %>">
+        <% } %>
+        <label class="form-control">
+          <div class="label"><span class="label-text">Nombre</span></div>
+          <input type="text" name="nombre" class="input input-bordered" required value="<%= tenant.nombre || '' %>">
+        </label>
+        <label class="form-control">
+          <div class="label"><span class="label-text">NIT</span></div>
+          <input type="text" name="nit" class="input input-bordered" value="<%= tenant.nit || '' %>">
+        </label>
+        <label class="form-control">
+          <div class="label"><span class="label-text">Email contacto</span></div>
+          <input type="email" name="email_contacto" class="input input-bordered" required value="<%= tenant.email_contacto || '' %>">
+        </label>
+        <label class="form-control">
+          <div class="label"><span class="label-text">Teléfono</span></div>
+          <input type="text" name="telefono_contacto" class="input input-bordered" value="<%= tenant.telefono_contacto || '' %>">
+        </label>
+        <label class="form-control md:col-span-2">
+          <div class="label"><span class="label-text">Dirección</span></div>
+          <input type="text" name="direccion" class="input input-bordered" value="<%= tenant.direccion || '' %>">
+        </label>
+          <label class="form-control">
+            <div class="label"><span class="label-text">Esquema (auto)</span></div>
+            <input type="text" id="esquema_preview" name="esquema_preview" class="input input-bordered" value="" readonly>
+            <div class="label"><span class="label-text-alt opacity-70">Se genera como tenant_{nombre_normalizado}</span></div>
+          </label>
+        <label class="form-control">
+          <div class="label"><span class="label-text">Contraseña admin <span class="opacity-70">(<%= mode==='edit' ? 'opcional' : 'requerida' %>)</span></span></div>
+          <input type="password" name="password" class="input input-bordered" <%= mode==='create' ? 'required' : '' %>>
+          <% if (mode==='edit') { %><div class="label"><span class="label-text-alt opacity-70">Déjalo vacío para no cambiarla</span></div><% } %>
+        </label>
+        <div class="md:col-span-2 flex justify-end gap-2">
+          <a href="/tenants" class="btn btn-ghost">Cancelar</a>
+          <button class="btn btn-gradient">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+  (function(){
+    const nombre = document.querySelector('input[name="nombre"]');
+    const preview = document.getElementById('esquema_preview');
+    function slugify(v){
+      return 'tenant_' + (v||'')
+        .toLowerCase()
+        .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+        .replace(/[^a-z0-9_]+/g,'_')
+        .replace(/^_+|_+$/g,'');
+    }
+    function update(){ preview.value = slugify(nombre.value || ''); }
+    nombre.addEventListener('input', update);
+    update();
+  })();
+</script>

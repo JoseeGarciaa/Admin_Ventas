@@ -1,0 +1,11 @@
+<% const f = typeof flash === 'function' ? flash() : {}; %>
+<% if (f?.success && f.success.length) { %>
+  <div class="alert alert-success shadow mb-4">
+    <span><%= f.success.join(' ') %></span>
+  </div>
+<% } %>
+<% if (f?.error && f.error.length) { %>
+  <div class="alert alert-error shadow mb-4">
+    <span><%= f.error.join(' ') %></span>
+  </div>
+<% } %>

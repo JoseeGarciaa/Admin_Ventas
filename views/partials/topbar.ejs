@@ -1,0 +1,46 @@
+<div class="flex items-center justify-between">
+  <div>
+    <h1 class="text-xl font-semibold"><%= title || 'Dashboard' %></h1>
+    <div class="breadcrumbs text-xs opacity-70">
+      <ul>
+        <li>Dashboard</li>
+        <li><%= title || '' %></li>
+      </ul>
+    </div>
+  </div>
+  <div class="flex items-center gap-2">
+    <input type="text" placeholder="Buscar..." class="input input-sm input-bordered w-64" />
+  <a href="/tenants/new" class="btn btn-sm btn-gradient">Nuevo</a>
+    <form method="post" action="/auth/logout" class="hidden md:block">
+      <button class="btn btn-sm">Salir</button>
+    </form>
+    <label class="swap swap-rotate">
+      <input type="checkbox" id="themeToggle" />
+      <!-- Moon (shows when dark = checked) -->
+      <svg class="swap-on w-6 h-6 text-indigo-300" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 1 0 21 12.79z"/>
+      </svg>
+      <!-- Sun (shows when light = unchecked) -->
+      <svg class="swap-off w-6 h-6 text-yellow-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M6.76 4.84 5.34 3.43 3.93 4.84l1.41 1.41 1.42-1.41zM1 13h3v-2H1v2zm10 10h2v-3h-2v3zM4.95 19.07l1.41 1.41 1.41-1.41-1.41-1.41-1.41 1.41zM20 11V9h-3v2h3zm-4.24-6.16 1.41-1.41-1.41-1.41-1.41 1.41 1.41 1.41zM13 1h-2v3h2V1zm6.05 18.07-1.41-1.41-1.41 1.41 1.41 1.41 1.41-1.41z"/>
+        <circle cx="12" cy="12" r="4"/>
+      </svg>
+    </label>
+  </div>
+</div>
+<script>
+  // Theme toggle
+  (function(){
+    const key='sdai-theme';
+    const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+    const saved = localStorage.getItem(key) || (prefersLight ? 'light' : 'dark');
+    document.documentElement.setAttribute('data-theme', saved==='light' ? 'light' : 'dark');
+    const toggle=document.getElementById('themeToggle');
+    if(toggle) toggle.checked = saved==='dark';
+    toggle?.addEventListener('change', ()=>{
+      const theme = toggle.checked ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem(key, theme);
+    });
+  })();
+</script>

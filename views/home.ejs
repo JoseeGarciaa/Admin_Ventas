@@ -1,0 +1,162 @@
+<section class="space-y-6">
+  <!-- KPI Row -->
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+  <div class="card bg-base-100 soft-card gradient-card gradient-pink shadow-glow">
+      <div class="card-body">
+        <div class="text-xs font-medium text-slate-900">Tenants totales</div>
+        <div class="text-3xl font-extrabold text-slate-900"><%= (tenants || []).length %></div>
+        <div class="mt-2 h-2 rounded bg-base-200">
+          <div class="h-2 bg-brand-500 rounded" style="width: 100%"></div>
+        </div>
+      </div>
+    </div>
+  <div class="card bg-base-100 soft-card gradient-card gradient-mint shadow-glow">
+      <div class="card-body">
+        <div class="text-xs font-medium text-slate-900">Activos</div>
+        <div class="text-3xl font-extrabold text-slate-900"><%= (tenants || []).filter(t=>t.estado).length %></div>
+        <progress class="progress progress-success w-full" value="<%= Math.round(((tenants||[]).filter(t=>t.estado).length)/Math.max((tenants||[]).length,1)*100) %>" max="100"></progress>
+      </div>
+    </div>
+  <div class="card bg-base-100 soft-card gradient-card gradient-sunset shadow-glow">
+      <div class="card-body">
+        <div class="text-xs font-medium text-slate-900">Inactivos</div>
+        <div class="text-3xl font-extrabold text-slate-900"><%= (tenants || []).filter(t=>!t.estado).length %></div>
+        <progress class="progress progress-warning w-full" value="<%= Math.round(((tenants||[]).filter(t=>!t.estado).length)/Math.max((tenants||[]).length,1)*100) %>" max="100"></progress>
+      </div>
+    </div>
+  <div class="card bg-base-100 soft-card gradient-card gradient-violet shadow-glow">
+      <div class="card-body">
+        <div class="text-xs font-medium text-slate-900">Último alta</div>
+        <div class="text-3xl font-extrabold text-slate-900"><%= (tenants && tenants[0]) ? new Date(tenants[0].fecha_creacion).toLocaleDateString() : '-' %></div>
+        <a href="/tenants/new" class="btn btn-sm btn-primary mt-2">Nuevo Tenant</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts/Widgets Row -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+    <div class="card bg-base-100 shadow soft-card lg:col-span-2">
+      <div class="card-body">
+        <div class="flex items-center justify-between">
+          <h2 class="card-title">Actividad</h2>
+        </div>
+        <div class="p-4 flex justify-center">
+          <canvas id="chartActivos" width="220" height="140" style="max-width: 260px;"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="card bg-base-100 shadow soft-card">
+      <div class="card-body">
+        <h2 class="card-title">Estado</h2>
+        <ul class="space-y-2 text-sm">
+          <li class="flex items-center justify-between"><span>Activos</span><span class="badge badge-success"><%= (tenants||[]).filter(t=>t.estado).length %></span></li>
+          <li class="flex items-center justify-between"><span>Inactivos</span><span class="badge badge-warning"><%= (tenants||[]).filter(t=>!t.estado).length %></span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Table Row -->
+  <div class="card bg-base-100 shadow soft-card">
+    <div class="card-body">
+      <div class="flex items-center justify-between">
+        <h2 class="card-title">Tenants recientes</h2>
+        <a href="/tenants" class="btn btn-ghost btn-sm">Ver todos</a>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Email</th>
+              <th>Esquema</th>
+              <th>Estado</th>
+              <th>Fecha</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% (tenants || []).slice(0,6).forEach(t => { %>
+              <tr>
+                <td><%= t.id %></td>
+                <td><%= t.nombre %></td>
+                <td><%= t.email_contacto %></td>
+                <td><code><%= t.esquema %></code></td>
+                <td>
+                  <span class="badge <%= t.estado ? 'badge-success' : 'badge-ghost' %>"><%= t.estado ? 'Activo' : 'Inactivo' %></span>
+                </td>
+                <td><%= new Date(t.fecha_creacion).toLocaleString() %></td>
+                <td class="text-right"><a href="/tenants/<%= t.id %>" class="btn btn-xs">Abrir</a></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+<script id="tenantsData" type="application/json"><%- JSON.stringify(tenants || []) %></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+  (function(){
+    let tenants = [];
+    try { tenants = JSON.parse(document.getElementById('tenantsData')?.textContent || '[]'); } catch {}
+    const activos = tenants.filter(t=>t.estado).length;
+    const inactivos = tenants.filter(t=>!t.estado).length;
+    const ctx = document.getElementById('chartActivos');
+    if (!ctx) return;
+  const getTheme = () => document.documentElement.getAttribute('data-theme') || 'dark';
+  const getTextColor = (t) => t==='light' ? '#0f172a' : '#e5e7eb';
+  const theme = getTheme();
+  const textColor = getTextColor(theme);
+    const data = {
+      labels: ['Activos','Inactivos'],
+      datasets: [{
+        label: 'Tenants',
+        data: [activos, inactivos],
+        backgroundColor: ['rgba(34,197,94,0.8)','rgba(245,158,11,0.8)'],
+        borderColor: ['rgba(16,185,129,1)','rgba(245,158,11,1)'],
+        borderWidth: 2,
+        hoverOffset: 8,
+      }]
+    };
+    const chart = new Chart(ctx, {
+      type: 'doughnut',
+      data,
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'bottom', labels: { color: textColor, boxWidth: 10, font: { size: 11 } } },
+          tooltip: {
+            enabled: true,
+            titleColor: textColor,
+            bodyColor: textColor,
+            footerColor: textColor,
+            backgroundColor: theme==='light' ? 'rgba(255,255,255,0.95)' : 'rgba(17,24,39,0.95)',
+            borderColor: theme==='light' ? 'rgba(15,23,42,0.15)' : 'rgba(229,231,235,0.15)',
+            borderWidth: 1
+          }
+        },
+        cutout: '65%',
+      }
+    });
+    // Apply legend/text color on theme changes
+    const applyThemeToChart = (t) => {
+      const c = getTextColor(t);
+      chart.options.plugins.legend.labels.color = c;
+      chart.options.plugins.tooltip.titleColor = c;
+      chart.options.plugins.tooltip.bodyColor = c;
+      chart.options.plugins.tooltip.footerColor = c;
+      chart.options.plugins.tooltip.backgroundColor = t==='light' ? 'rgba(255,255,255,0.95)' : 'rgba(17,24,39,0.95)';
+      chart.options.plugins.tooltip.borderColor = t==='light' ? 'rgba(15,23,42,0.15)' : 'rgba(229,231,235,0.15)';
+      chart.update();
+    };
+    const toggle = document.getElementById('themeToggle');
+    toggle?.addEventListener('change', ()=>{
+      const t = toggle.checked ? 'dark' : 'light';
+      setTimeout(()=> applyThemeToChart(t), 100);
+    });
+  })();
+</script>

@@ -1,0 +1,27 @@
+<div class="max-w-4xl mx-auto space-y-6">
+  <div class="card bg-base-100 soft-card">
+    <div class="card-body space-y-4">
+      <div class="gradient-card gradient-mint rounded-xl p-4 flex items-center justify-between">
+        <h2 class="text-lg font-semibold">Tenant: <%= tenant.nombre %></h2>
+        <a href="/tenants/<%= tenant.id %>/edit" class="btn btn-sm btn-gradient">Editar</a>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div><span class="font-semibold">Email:</span> <%= tenant.email_contacto %></div>
+        <div><span class="font-semibold">Teléfono:</span> <%= tenant.telefono_contacto || '-' %></div>
+        <div><span class="font-semibold">Esquema:</span> <code><%= tenant.esquema %></code></div>
+        <div><span class="font-semibold">Estado:</span> <span class="badge <%= tenant.estado ? 'badge-success' : 'badge-ghost' %>"><%= tenant.estado ? 'Activo' : 'Inactivo' %></span></div>
+        <div><span class="font-semibold">Dirección:</span> <%= tenant.direccion || '-' %></div>
+        <div><span class="font-semibold">Creado:</span> <%= new Date(tenant.fecha_creacion).toLocaleString() %></div>
+      </div>
+      <div class="divider"></div>
+      <div class="flex flex-wrap gap-2">
+        <a href="/tenants" class="btn">Volver</a>
+        <a href="/tenants/<%= tenant.id %>/edit" class="btn btn-gradient">Editar</a>
+        <form method="post" action="/tenants/delete" onsubmit="return confirm('¿Eliminar tenant y esquema?');">
+          <input type="hidden" name="esquema" value="<%= tenant.esquema %>" />
+          <button class="btn btn-error">Eliminar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

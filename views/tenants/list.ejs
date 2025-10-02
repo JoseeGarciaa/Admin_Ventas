@@ -1,0 +1,41 @@
+<div class="card bg-base-100 soft-card">
+  <div class="card-body gap-4">
+    <div class="gradient-card gradient-violet rounded-xl p-4 flex items-center justify-between">
+      <h2 class="text-lg font-semibold">Tenants</h2>
+      <a href="/tenants/new" class="btn btn-gradient btn-sm">Nuevo Tenant</a>
+    </div>
+    <div class="overflow-x-auto rounded-xl">
+      <table class="table table-zebra">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Esquema</th>
+            <th>Estado</th>
+            <th>Creación</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% tenants.forEach(t => { %>
+            <tr>
+              <td><%= t.id %></td>
+              <td><%= t.nombre %></td>
+              <td><%= t.email_contacto %></td>
+              <td><code><%= t.esquema %></code></td>
+              <td>
+                <span class="badge <%= t.estado ? 'badge-success' : 'badge-warning' %>"><%= t.estado ? 'Activo' : 'Inactivo' %></span>
+              </td>
+              <td><%= new Date(t.fecha_creacion).toLocaleString() %></td>
+              <td class="flex gap-2 justify-end">
+                <a href="/tenants/<%= t.id %>" class="btn btn-sm">Abrir</a>
+                <a href="/tenants/<%= t.id %>/edit" class="btn btn-sm btn-gradient">Editar</a>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+  <head>
+    <title><%= title || 'Admin Ventas' %></title>
+    <%- include('partials/head') %>
+  </head>
+  <body class="min-h-screen bg-base-200 text-base-content bg-soft-anim">
+    <% if (currentUser) { %>
+      <div class="flex min-h-screen">
+        <aside class="w-72 bg-base-100/20 backdrop-blur-md border-r border-base-300/30 hidden md:flex flex-col h-screen sticky top-0 flex-shrink-0">
+          <%- include('partials/sidebar') %>
+        </aside>
+        <div class="flex-1 flex flex-col">
+          <header class="px-6 py-4 bg-base-100/20 backdrop-blur-md border-b border-base-300/30">
+            <%- include('partials/topbar') %>
+          </header>
+          <main class="p-6 space-y-6">
+            <%- include('partials/flash') %>
+            <%- body %>
+          </main>
+        </div>
+      </div>
+    <% } else { %>
+      <main class="container mx-auto p-6">
+        <%- body %>
+      </main>
+    <% } %>
+  </body>
+  
+</html>
